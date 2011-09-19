@@ -12,6 +12,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -88,7 +89,7 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 	public void loadSettings(Settings settings)
 	{
 		this.settings = settings;
-
+		
 		modemComPort.setModel(new DefaultComboBoxModel(getAvailableComPorts()));
 		modemComPort.setSelectedItem(settings.getComPort());
 		modemComBaudRate.setText(Integer.toString(settings.getComBaudRate()));
@@ -518,7 +519,6 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 			rootTabbedPane.setSelectedIndex(1);
 			valid = false;
 		}
-
 		return valid;
 	}
 	
@@ -557,6 +557,7 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 		public void actionPerformed(ActionEvent e)
 		{
 			if (validateValues()) {
+				Settings oldSettings = settings.clone();
 				saveValues();
 				
 				try {
@@ -566,6 +567,7 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 					return;
 				}
 				
+				SettingsDialog.this.firePropertyChange("settings", oldSettings, settings);
 				setVisible(false);
 			}
 		}
