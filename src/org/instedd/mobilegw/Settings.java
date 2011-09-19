@@ -8,7 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
-public class Settings {
+public class Settings implements Cloneable {
 	private static final int MODEM_BAUDRATE_DEFAULT = 9600;
 	private static final String GATEWAY_URL = "gateway.url";
 	private static final String GATEWAY_USERNAME = "gateway.username";
@@ -26,7 +26,6 @@ public class Settings {
 	private static final String MOBILE_NUMBER = "mobile.number";
 	private static final String SKYPE_ENABLED = "skype.enabled";
 	
-	
 	private Properties properties;
 
 	public Settings() {
@@ -42,6 +41,14 @@ public class Settings {
 		} catch (IOException e) {
 			// Ignore the error and continue with empty settings
 		}
+	}
+	
+	private Settings(Properties properties) {
+		this.properties = properties;
+	}
+	
+	public Settings clone() {
+		return new Settings(this.properties);
 	}
 
 	public void save() throws IOException {
