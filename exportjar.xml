@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project MobileGateway with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="MobileGateway.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="org.instedd.mobilegw.Main"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ librxtxSerial.so smslib-3.4.3.jar RXTXcomm.jar slf4j-api-1.5.8.jar slf4j-jdk14-1.5.8.jar sqlitejdbc-v056.jar skype_full.jar swt.jar"/>
+            	<attribute name="Version" value="${Version}" />
+            	<attribute name="Installer-Url" value="${InstallerUrl}" />
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="bin"/>
+			<zipfileset dir="lib" includes="librxtxSerial.so"/>
+            <zipfileset dir="lib" includes="smslib-3.4.3.jar"/>
+            <zipfileset dir="lib" includes="RXTXcomm.jar"/>
+            <zipfileset dir="lib" includes="slf4j-api-1.5.8.jar"/>
+            <zipfileset dir="lib" includes="slf4j-jdk14-1.5.8.jar"/>
+            <zipfileset dir="lib" includes="sqlitejdbc-v056.jar"/>
+            <zipfileset dir="lib" includes="skype_full.jar"/>
+			<zipfileset dir="lib" includes="swt.jar"/>
+        </jar>
+    </target>
+</project>
