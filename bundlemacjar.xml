@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="bundle_jar" name="Create Mac OS Application">
+	
+	<taskdef name="jarbundler"
+		classpath="../../Lib/MacOS/jarbundler-2.1.0.jar"
+		classname="net.sourceforge.jarbundler.JarBundler" />
+	
+    <target name="bundle_jar">
+        <jarbundler dir="."
+        	name="MobileGateway"
+        	mainclass="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"
+        	jar="MobileGateway.jar"
+        	stubfile="../../Lib/MacOS/JavaApplicationStub"
+        	icon="../../Lib/MacOS/Network Alt.icns"
+        	version="${Version}">
+        	<javafilelist dir="lib" files="librxtxSerial.jnilib" />
+        </jarbundler>
+    	<tar compression="gzip" destfile="GeoChat-MobileGateway-MacOS.tar.gz" >
+    		<tarfileset
+    			includes="MobileGateway.app/**"
+    			excludes="MobileGateway.app/Contents/MacOS/JavaApplicationStub" dir="." />
+    		<tarfileset
+    			includes="MobileGateway.app/Contents/MacOS/JavaApplicationStub" dir="."
+    			mode="755" />
+    	</tar>
+    </target>
+
+	
+</project>

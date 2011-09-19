@@ -1,0 +1,7 @@
+syntax: glob
+bin
+obj
+MobileGateway.app
+MobileGateway.jar
+.DS_Store
+*.log
