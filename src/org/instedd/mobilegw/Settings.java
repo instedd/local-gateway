@@ -22,8 +22,10 @@ public class Settings {
 	private static final String MODEM_MANUFACTURER = "modem.manufacturer";
 	private static final String MODEM_MODEL = "modem.model";
 	private static final String MODEM_APPEND_PLUS = "model.appendPlus";
+	private static final String MODEM_MOCK_MESSAGES_MODE = "modem.mockmessages";
 	private static final String MOBILE_NUMBER = "mobile.number";
 	private static final String SKYPE_ENABLED = "skype.enabled";
+	
 	
 	private Properties properties;
 
@@ -181,5 +183,13 @@ public class Settings {
 	
 	public URL getNuntiumUrl() throws MalformedURLException {
 		return new URL(System.getProperty("LGW_NUNTIUM_URL", "http://nuntium.instedd.org"));
+	}
+
+	public boolean getMockMessagesMode() {
+		return Boolean.parseBoolean(properties.getProperty(MODEM_MOCK_MESSAGES_MODE));
+	}
+	
+	public void setMockMessagesMode(boolean value) {
+		properties.setProperty(MODEM_MOCK_MESSAGES_MODE, Boolean.toString(value));
 	}
 }

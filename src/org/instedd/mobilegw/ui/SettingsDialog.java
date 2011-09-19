@@ -35,6 +35,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.instedd.mobilegw.CommTest;
 import org.instedd.mobilegw.ConfigTicketManager;
@@ -54,6 +56,7 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 	private JTextField modemManufacturer;
 	private JTextField modemModel;
 	private JCheckBox modemAppendPlus;
+	private JCheckBox mockMessagesMode;
 	private JTextField gatewayUrl;
 	private JTextField gatewayUsername;
 	private JPasswordField gatewayPassword;
@@ -61,12 +64,14 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 	private JTextField httpsProxyHost, httpsProxyPort;
 	private JTabbedPane rootTabbedPane;
 	private JLabel loopTestLabel;
+	private JLabel autodetectLabel;
 	private JTextField mobileNumber;
 	private JCheckBox skypeEnabed;
 	private JLabel generateCodeLabel;
 	private JLabel codeLabel;
 	private JLabel codeInstructions;
 	private JTextField codeField;
+	
 	private Component modemTab, skypeTab, gatewayTab;
 	
 	private boolean codePolling;
@@ -91,7 +96,8 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 		modemModel.setText(settings.getModemModel());
 		mobileNumber.setText(settings.getMobileNumber());
 		modemAppendPlus.setSelected(settings.getAppendPlus());
-
+		mockMessagesMode.setSelected(settings.getMockMessagesMode());
+		
 		gatewayUrl.setText(settings.getGatewayUrl());
 		gatewayUsername.setText(settings.getGatewayUsername());
 		gatewayPassword.setText(settings.getGatewayPassword());
@@ -172,6 +178,12 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 		appendPanel.add(modemAppendPlus = new JCheckBox(), c);
 		panel.add(appendPanel, c);
 		
+		JPanel mockMessagesPanel = new JPanel();
+		mockMessagesPanel.setLayout(new BoxLayout(mockMessagesPanel, BoxLayout.X_AXIS));
+		mockMessagesPanel.add(new JLabel("Enable mock messages mode:"), c);
+		mockMessagesPanel.add(getMockMessagesModeCheckbox(), c);
+		panel.add(mockMessagesPanel, c);
+		
 		panel.add(getLoopTestLabel(), c);
 		panel.add(getAutodetectModemLabel(), c);
 		c.gridwidth = 1;
@@ -193,9 +205,26 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 		return panel;
 	}
 
+	private Component getMockMessagesModeCheckbox() {
+		this.mockMessagesMode = new JCheckBox();
+		this.mockMessagesMode.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				boolean enableModem = !mockMessagesMode.isSelected();
+				modemComPort.setEnabled(enableModem);
+				modemComBaudRate.setEnabled(enableModem);
+				modemManufacturer.setEnabled(enableModem);
+				modemModel.setEnabled(enableModem);
+				loopTestLabel.setEnabled(enableModem);
+				autodetectLabel.setEnabled(enableModem);
+			}
+		});
+		return this.mockMessagesMode;
+	}
+
 	private Component getLoopTestLabel()
 	{
-		loopTestLabel = new JLabel("<html><a href='#'>Loop test</a></html>");
+		this.loopTestLabel = new JLabel("<html><a href='#'>Loop test</a></html>");
 		loopTestLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		loopTestLabel.addMouseListener(new MouseAdapter()
@@ -203,7 +232,7 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{
-				if (validateValues()) {
+				if (validateValues() && !isMockMessagesModeEnabled()) {
 					saveValues();
 					ModemTester modemTester = new ModemTester(settings);
 					ProgressDialog progressDialog = new ProgressDialog(SettingsDialog.this);
@@ -217,13 +246,14 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 	
 	private Component getAutodetectModemLabel()
 	{
-		JLabel autodetectLabel = new JLabel("<html><a href='#'>Autodetect modem</a></html>");
+		this.autodetectLabel = new JLabel("<html><a href='#'>Autodetect modem</a></html>");
 		autodetectLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		
 		autodetectLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{
+				if (isMockMessagesModeEnabled()) return;
 				final CommTest commTester = new CommTest();
 				ProgressDialog progressDialog = new ProgressDialog(SettingsDialog.this);
 				commTester.test(progressDialog, new Runnable() {
@@ -491,6 +521,11 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 
 		return valid;
 	}
+	
+	private boolean isMockMessagesModeEnabled() {
+		return mockMessagesMode.isSelected();
+	}
+
 
 	private void saveValues()
 	{
@@ -508,6 +543,7 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 		settings.setHttpsProxyHost(httpsProxyHost.getText());
 		settings.setHttpsProxyPort(httpsProxyPort.getText());
 		settings.setAppendPlus(modemAppendPlus.isSelected());
+		settings.setMockMessagesMode(mockMessagesMode.isSelected());
 	}
 
 	private class OkAction extends AbstractAction

@@ -9,8 +9,6 @@
 	<classpathentry kind="lib" path="lib/smslib-3.4.3.jar"/>
 	<classpathentry kind="lib" path="lib/sqlitejdbc-v056.jar"/>
 	<classpathentry kind="lib" path="lib/swt.jar"/>
-	<classpathentry kind="lib" path="MobileGateway.app/Contents/Resources/Java/MobileGateway.jar"/>
-	<classpathentry kind="lib" path="MobileGateway.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
