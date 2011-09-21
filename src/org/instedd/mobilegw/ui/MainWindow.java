@@ -4,8 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Handler;
@@ -33,7 +36,7 @@ import org.instedd.mobilegw.messaging.MessageQueueListener;
 public class MainWindow extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private static final String MOCK_MESSAGES_TAB_TITLE = "Mock Messages";
+	private static final String MOCK_MESSAGES_TAB_TITLE = "Simulate Messages";
 	
 	private JPanel contentPane = null;
 	private EventList eventList = null;
@@ -48,6 +51,7 @@ public class MainWindow extends JFrame {
 	private MockMessagesView mockMessagesView;
 	private JPanel statusBar;
 	private JTabbedPane tabbedPane;
+	private Settings settings;
 	
 	public MainWindow() {
 		controller = new Controller();
@@ -98,7 +102,7 @@ public class MainWindow extends JFrame {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setTitle("Mobile Gateway");
 		
-		Settings settings = new Settings();
+		settings = new Settings();
 		
 		// Main content pane
 		contentPane = new JPanel();
@@ -144,6 +148,14 @@ public class MainWindow extends JFrame {
 		
 		settingsAction = new SettingsAction();
 		styleToolbarButton(toolBar.add(settingsAction));
+		
+		// Listen when application exits and save settings if necessary
+		this.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				try { settings.save(); } 
+				catch (IOException e1) { e1.printStackTrace(); }
+			}
+		});
 	}
 
 	private void styleToolbarButton(JButton button) {
@@ -156,7 +168,7 @@ public class MainWindow extends JFrame {
 	private void updateVisibleTabs(Settings settings) {
 		int currentMockTabIndex = tabbedPane.indexOfTab(MOCK_MESSAGES_TAB_TITLE);
 		if (settings.getMockMessagesMode() && currentMockTabIndex < 0) {
-			tabbedPane.addTab("Mock Messages", mockMessagesView);
+			tabbedPane.addTab(MOCK_MESSAGES_TAB_TITLE, mockMessagesView);
 		} else if (!settings.getMockMessagesMode() && currentMockTabIndex >= 0){
 			tabbedPane.removeTabAt(currentMockTabIndex);
 		}
@@ -180,7 +192,7 @@ public class MainWindow extends JFrame {
 				public void run() {
 					try {
 						logger.info("Starting...");
-						controller.start(new Settings(), eventList
+						controller.start(settings, eventList
 								.getLoggingHandler(), new UIDaemonListener());
 						stopAction.setEnabled(true);
 					} catch (Throwable ex) {
@@ -227,7 +239,7 @@ public class MainWindow extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			SettingsDialog settingsDialog = new SettingsDialog(MainWindow.this);
-			settingsDialog.loadSettings(new Settings());
+			settingsDialog.loadSettings(settings);
 			settingsDialog.addPropertyChangeListener("settings", new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent pce) {
 					updateVisibleTabs((Settings) pce.getNewValue());
