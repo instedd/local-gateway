@@ -52,7 +52,7 @@ public class Settings implements Cloneable {
 		return new Settings(this.properties);
 	}
 
-	public void save() throws IOException {
+	public synchronized void save() throws IOException {
 		FileOutputStream file = new FileOutputStream(getSettingsFile());
 		try {
 			properties.store(file, null);

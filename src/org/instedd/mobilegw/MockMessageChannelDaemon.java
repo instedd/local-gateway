@@ -19,7 +19,7 @@ public class MockMessageChannelDaemon extends MessageChannelDaemon
 
 	public MockMessageChannelDaemon(DirectedMessageStore store, MessageQueue moQueue, MessageQueue mtQueue, Logger logger)
 	{
-		this.setName("Mock");
+		this.setName("Simulator");
 		
 		this.moQueue = moQueue;
 		this.mtQueue = mtQueue;
@@ -31,9 +31,9 @@ public class MockMessageChannelDaemon extends MessageChannelDaemon
 				if (message.isAO()) {
 					try {
 						MockMessageChannelDaemon.this.moQueue.enqueue(new Message[] { message });
-						MockMessageChannelDaemon.this.logger.info("Mock message received from " + message.from);
+						MockMessageChannelDaemon.this.logger.info("Message received from " + message.from);
 					} catch (Exception e) {
-						MockMessageChannelDaemon.this.logger.severe("Error receiving mock message: " + e.getMessage());
+						MockMessageChannelDaemon.this.logger.severe("Error receiving message: " + e.getMessage());
 					}
 				}
 			}
@@ -46,13 +46,13 @@ public class MockMessageChannelDaemon extends MessageChannelDaemon
 		try {
 			//TODO: Start 
 		} catch (Exception e) {
-			logger.severe("Failed to start modem: " + e.getMessage());
+			logger.severe("Failed to start daemon: " + e.getMessage());
 			throw new Error(e);
 		}
 		
 		super.start();
 
-		logger.info("Mock messages daemon started successfully");
+		logger.info("Simulated messages daemon started successfully");
 	}
 
 	@Override
@@ -61,11 +61,11 @@ public class MockMessageChannelDaemon extends MessageChannelDaemon
 		super.stop();
 		
 		try {
-			logger.info("Stopping mock messages daemon");
+			logger.info("Stopping simulated messages daemon");
 			// TODO: Stop me
-			logger.info("Mock messages daemon stopped successfully");
+			logger.info("Simulated messages daemon stopped successfully");
 		} catch (Exception e) {
-			logger.severe("Failed to stop mock messages daemon: " + e.getMessage());
+			logger.severe("Failed to stop simulated messages daemon: " + e.getMessage());
 			throw new Error(e);
 		}
 	}
@@ -74,7 +74,7 @@ public class MockMessageChannelDaemon extends MessageChannelDaemon
 	public boolean sendMessage(Message message) throws Exception {
 		mtQueue.delete(message.id);
 		store.addMessage(new DirectedMessage(message, Direction.AO));
-		logger.info("Sending mock message: " + message.toString());
+		logger.info("Sending simulated message: " + message.toString());
 		return true;
 	}
 	

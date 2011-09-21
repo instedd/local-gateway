@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -24,21 +25,46 @@ public class MockMessagesView extends JPanel {
 	private static final long serialVersionUID = 5796933430384777706L;
 	
 	private JPanel phonesPanel;
+	private JTextField phoneField;
 	
 	private Map<String, MockPhoneView> phones;
 	private DirectedMessageStore store;
 
-	private JTextField phoneField;
+	private Settings settings;
 	
 	public MockMessagesView(DirectedMessageStore store, Settings settings) {
 		super();
 		
 		this.store = store;
+		this.settings = settings;
 		this.phones = new HashMap<String, MockPhoneView>();
 		
 		initialize();
+		loadPhones();
 	}
 	
+	public boolean addPhone(String number) {
+		if (this.phones.containsKey(number)) return false;
+		MockPhone phone = new MockPhone(number, store).initialize();
+	
+		MockPhoneView view = new MockPhoneView(phone);
+		phones.put(number, view);
+		phonesPanel.add(view);
+		phonesPanel.setSize(300 * phones.size(), 0);
+		
+		Set<String> phonesKeySet = phones.keySet();
+		String[] phonesArray = (String[]) phonesKeySet.toArray(new String[phonesKeySet.size()]);
+		settings.setMockedPhones(phonesArray);
+		
+		return true;
+	}
+
+	private void loadPhones() {
+		for (String phone : settings.getMockedPhones()) {
+			addPhone(phone);
+		}
+	}
+
 	private void initialize() {
 		setLayout(new BorderLayout());
 		
@@ -74,16 +100,6 @@ public class MockMessagesView extends JPanel {
 		addPhonePanel.add(addButton);
 		
 		return addPhonePanel;
-	}
-
-	public boolean addPhone(String number) {
-		if (this.phones.containsKey(number)) return false;
-		MockPhone phone = new MockPhone(number, store).initialize();
-		MockPhoneView view = new MockPhoneView(phone);
-		phones.put(number, view);
-		phonesPanel.add(view);
-		phonesPanel.setSize(300 * phones.size(), 400);
-		return true;
 	}
 	
 }
