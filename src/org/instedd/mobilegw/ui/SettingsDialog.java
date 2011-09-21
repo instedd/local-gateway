@@ -12,7 +12,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -73,7 +72,7 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 	private JLabel codeInstructions;
 	private JTextField codeField;
 	
-	private Component modemTab, skypeTab, gatewayTab;
+	private Component modemTab;
 	
 	private boolean codePolling;
 	private Logger logger;
@@ -149,8 +148,8 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 	{
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.addTab("Modem", modemTab = getModemTab());
-		tabbedPane.addTab("Gateway", gatewayTab = getGatewayTab());
-		tabbedPane.addTab("Skype", skypeTab = getSkypeTab());
+		tabbedPane.addTab("Gateway", getGatewayTab());
+		tabbedPane.addTab("Skype", getSkypeTab());
 		return tabbedPane;
 	}
 

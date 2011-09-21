@@ -10,8 +10,10 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 
 import org.instedd.mobilegw.OutgoingDaemon.OutgoingHandler;
+import org.instedd.mobilegw.messaging.DbDirectedMessageStore;
 import org.instedd.mobilegw.messaging.DbLastIdStore;
 import org.instedd.mobilegw.messaging.DbMessageQueue;
+import org.instedd.mobilegw.messaging.DirectedMessageStore;
 import org.instedd.mobilegw.messaging.Message;
 import org.instedd.mobilegw.messaging.MessageQueue;
 import org.instedd.mobilegw.messaging.MessageQueueListener;
@@ -22,7 +24,7 @@ public class Controller
 {
 	private static final int SKYPE_THRESHOLD = 10;
 	private Connection dbConnection;
-	private ModemDaemon modemDaemon;
+	private MessageChannelDaemon modemDaemon;
 	private QueueStateTransferDaemon queueStateTransferDaemon;
 	private DbMessageQueue moQueue;
 	private DbMessageQueue mtQueue;
@@ -31,6 +33,7 @@ public class Controller
 	private OutgoingDaemon outgoingDaemon;
 	private SkypeDaemon skypeDaemon;
 	private boolean useSkype;
+	private DbDirectedMessageStore mockMessagesStore;
 
 	static {
 		try {
@@ -47,6 +50,7 @@ public class Controller
 
 			moQueue = new DbMessageQueue(dbConnection, "MOMessages");
 			mtQueue = new DbMessageQueue(dbConnection, "MTMessages");
+			mockMessagesStore = new DbDirectedMessageStore(dbConnection, "MockMessages");
 			lastIdStore = new DbLastIdStore(dbConnection);
 		} catch (Exception ex) {
 			throw new Error(ex);
@@ -65,6 +69,10 @@ public class Controller
 		return mtQueue;
 	}
 
+	public DirectedMessageStore getMockMessagesStore() {
+		return mockMessagesStore;
+	}
+
 	public void start(Settings settings, Handler logginHandler, DaemonListener daemonListener)
 	{
 		try {
@@ -78,21 +86,29 @@ public class Controller
 
 			checkIfSkypeShouldBeUsed();
 			
-			// Initialize the modem daemon
-			modemDaemon = new ModemDaemon(moQueue, logger, settings.getAppendPlus());
-			modemDaemon.addGateway(gateway);
+			modemDaemon = null;
+			skypeDaemon = null;
+			
+			if (settings.getMockMessagesMode()) {
+				// Initialize the modem daemon as a mock daemon
+				modemDaemon = new MockMessageChannelDaemon(mockMessagesStore, moQueue, mtQueue, logger);
+			} else {
+				// Initialize the modem daemon
+				modemDaemon = new ModemDaemon(moQueue, logger, settings.getAppendPlus()).withGateway(gateway);
+			}
+			
 			modemDaemon.addListener(new ControllerDaemonListener());
 			modemDaemon.addListener(daemonListener);
 			modemDaemon.start();
-
+			
 			// Initialize the skype daemon
-			if (settings.getSkypeEnabled()) {
+			if (!settings.getMockMessagesMode() && settings.getSkypeEnabled()) {
 				skypeDaemon = new SkypeDaemon(new SkypeMessageNotificationHandler(), logger);
 				skypeDaemon.addListener(new ControllerDaemonListener());
 				skypeDaemon.addListener(daemonListener);
 				skypeDaemon.start();
 			}
-			
+						
 			// Initialize the QST client			
 			QueueStateTransferClient qstClient = new QueueStateTransferClient(new URL(settings.getGatewayUrl()), settings.getGatewayUsername(), settings.getGatewayPassword());
 			queueStateTransferDaemon = new QueueStateTransferDaemon(moQueue, mtQueue, qstClient, lastIdStore, settings, logger);
@@ -125,14 +141,24 @@ public class Controller
 		}
 	}
 	
-	private boolean isModemAvailable()
-	{
+	private boolean isModemAvailable() {
 		return modemDaemon != null && modemDaemon.getState() == DaemonState.RUNNING;
 	}
 
-	private boolean isSkypeAvailable()
-	{
+	private boolean isSkypeAvailable() {
 		return skypeDaemon != null && skypeDaemon.getState() == DaemonState.RUNNING;
+	}
+
+	private void checkIfSkypeShouldBeUsed()
+	{
+		try {
+			if (!useSkype && mtQueue.getMessageCount() > SKYPE_THRESHOLD) {
+				logger.info("Too many messages in queue. Switching to Skype");
+				useSkype = true;
+			}
+		} catch (Exception e) {
+			logger.severe(e.getMessage());
+		}
 	}
 
 	private final class SkypeMessageNotificationHandler implements MessageNotificationHandler
@@ -149,7 +175,6 @@ public class Controller
 			try {
 				mtQueue.delete(message.id);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -175,27 +200,16 @@ public class Controller
 		
 		private MessageChannel[] getChannels() {
 			List<MessageChannel> channels = new ArrayList<MessageChannel>();
-			if (isModemAvailable())
+			
+			if (isModemAvailable()) {
 				channels.add(modemDaemon);
+			}
 			if (isSkypeAvailable()) {
-				if (useSkype)
-					channels.add(0, skypeDaemon);
-				else
-					channels.add(skypeDaemon);
+				if (useSkype) channels.add(0, skypeDaemon);
+				else channels.add(skypeDaemon);
 			}
+			
 			return (MessageChannel[]) channels.toArray(new MessageChannel[channels.size()]);
-		}
-	}
-	
-	private void checkIfSkypeShouldBeUsed()
-	{
-		try {
-			if (!useSkype && mtQueue.getMessageCount() > SKYPE_THRESHOLD) {
-				logger.info("Too many messages in queue. Switching to Skype");
-				useSkype = true;
-			}
-		} catch (Exception e) {
-			logger.severe(e.getMessage());
 		}
 	}
 	
