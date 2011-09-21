@@ -17,15 +17,14 @@ import org.smslib.Message.MessageEncodings;
 import org.smslib.Message.MessageTypes;
 import org.smslib.modem.SerialModemGateway;
 
-public class ModemDaemon extends Daemon implements MessageChannel
+public class ModemDaemon extends MessageChannelDaemon
 {
 	private final Service smslibService;
 	private final MessageQueue moQueue;
 	private final Logger logger;
 	private final boolean appendPlus;
 
-	public ModemDaemon(MessageQueue moQueue, Logger logger, boolean appendPlus)
-	{
+	public ModemDaemon(MessageQueue moQueue, Logger logger, boolean appendPlus) {
 		this.moQueue = moQueue;
 		this.logger = logger;
 		this.smslibService = new Service();
@@ -35,13 +34,13 @@ public class ModemDaemon extends Daemon implements MessageChannel
 		smslibService.setInboundMessageNotification(new InboundMessageHandler());
 	}
 
-	public void addGateway(AGateway gateway)
+	public ModemDaemon withGateway(AGateway gateway)
 	{
 		try {
 			smslibService.addGateway(gateway);
 		} catch (GatewayException e) {
 			throw new Error(e);
-		}
+		} return this;
 	}
 
 	public void start()

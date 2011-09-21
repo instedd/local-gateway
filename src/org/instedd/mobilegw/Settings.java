@@ -25,6 +25,7 @@ public class Settings implements Cloneable {
 	private static final String MODEM_MOCK_MESSAGES_MODE = "modem.mockmessages";
 	private static final String MOBILE_NUMBER = "mobile.number";
 	private static final String SKYPE_ENABLED = "skype.enabled";
+	private static final String MOCKED_PHONES = "mock.phones";
 	
 	private Properties properties;
 
@@ -198,5 +199,22 @@ public class Settings implements Cloneable {
 	
 	public void setMockMessagesMode(boolean value) {
 		properties.setProperty(MODEM_MOCK_MESSAGES_MODE, Boolean.toString(value));
+	}
+	
+	public String[] getMockedPhones() {
+		String property = properties.getProperty(MOCKED_PHONES);
+		if (property == null) return new String[0];
+		return property.split("\\s+");
+	}
+	
+	public void setMockedPhones(String[] phones) {
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < phones.length; i++) {
+			String phone = phones[i];
+			builder.append(phone);
+			if (i != phones.length - 1) builder.append(" ");
+		}
+		
+		properties.setProperty(MOCKED_PHONES, builder.toString());
 	}
 }

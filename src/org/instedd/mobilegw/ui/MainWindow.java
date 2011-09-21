@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
@@ -122,7 +120,7 @@ public class MainWindow extends JFrame {
 						.getOutgoingQueue()));
 
 		// Mock messages
-		mockMessagesView = new MockMessagesView();
+		mockMessagesView = new MockMessagesView(controller.getMockMessagesStore(), settings);
 		updateVisibleTabs(settings);
 		
 		// Status bar
