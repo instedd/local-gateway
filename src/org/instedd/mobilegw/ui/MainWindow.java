@@ -29,6 +29,7 @@ import org.instedd.mobilegw.Controller;
 import org.instedd.mobilegw.Daemon;
 import org.instedd.mobilegw.DaemonListener;
 import org.instedd.mobilegw.DaemonState;
+import org.instedd.mobilegw.MockMessageChannelDaemon;
 import org.instedd.mobilegw.Settings;
 import org.instedd.mobilegw.messaging.Message;
 import org.instedd.mobilegw.messaging.MessageQueueListener;
@@ -260,6 +261,17 @@ public class MainWindow extends JFrame {
 		@Override
 		public void stateChanged(Daemon daemon, DaemonState oldState,
 				DaemonState newState) {
+			updateDaemonLabel(daemon, newState);
+			handleMockMessagesView(daemon, newState);
+		}
+
+		private void handleMockMessagesView(Daemon daemon, DaemonState newState) {
+			if (daemon instanceof MockMessageChannelDaemon) {
+				mockMessagesView.setMessagingEnabled(newState == DaemonState.RUNNING);
+			}
+		}
+
+		private void updateDaemonLabel(Daemon daemon, DaemonState newState) {
 			JLabel label = getDaemonLabel(daemon);
 			if (newState == DaemonState.RUNNING
 					|| newState == DaemonState.STOPPING) {
