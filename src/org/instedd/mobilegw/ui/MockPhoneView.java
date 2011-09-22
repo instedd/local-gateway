@@ -44,6 +44,10 @@ public class MockPhoneView extends JPanel {
 		initialize();
 	}
 	
+	public MockPhone getPhone() {
+		return phone;
+	}
+
 	private void initialize() {
 		setMaximumSize(new Dimension(300, Integer.MAX_VALUE));
 		setMinimumSize(new Dimension(300, 0));
@@ -130,10 +134,6 @@ public class MockPhoneView extends JPanel {
 		add(actionsPanel, BorderLayout.SOUTH);
 	}
 	
-	public MockPhone getPhone() {
-		return phone;
-	}
-	
 	private class MockMessageCellRenderer implements ListCellRenderer {
 
 		private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss, yyyy-MM-dd");
@@ -175,7 +175,7 @@ public class MockPhoneView extends JPanel {
 	            final boolean hasFocus) {
 
 	    	DirectedMessage message = (DirectedMessage) value;			
-			textArea.setText(message.text + "123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789");
+			textArea.setText(message.text);
 			time.setText("<html><span style='font-weight:normal; font-style:italic;'>at " + dateFormat.format(message.when) + "</span></html>");
 
 			GridBagConstraints c = new GridBagConstraints();

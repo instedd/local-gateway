@@ -10,6 +10,7 @@ import javax.swing.DefaultListModel;
 import org.instedd.mobilegw.helpers.PhoneHelper;
 import org.instedd.mobilegw.messaging.DirectedMessage;
 import org.instedd.mobilegw.messaging.DirectedMessageStore;
+import org.instedd.mobilegw.messaging.DirectedMessageStoreListener;
 import org.instedd.mobilegw.messaging.DirectedMessage.Direction;
 
 public class MockPhone {
@@ -42,10 +43,23 @@ public class MockPhone {
 	}
 
 	public MockPhone initialize() {
+		// Load existing messages
 		String phone = PhoneHelper.withSmsProtocol(number);
 		for(DirectedMessage message : store.iterateMessages(phone)) {
 			addMessage(message);
-		} return this;
+		}
+		
+		// Listen for new messages
+		store.addDirectedMessageStoreListener(new DirectedMessageStoreListener() {
+			public void messageAdded(DirectedMessage message) {
+				String phone = PhoneHelper.withSmsProtocol(number);
+				if ((message.isAO() && message.to.equals(phone)) || (message.isAT() && message.from.equals(phone))) {
+					addMessage(message);
+				}
+			}
+		});
+		
+		return this;
 	}
 	
 	public void addListener(MockPhoneListener listener) {
@@ -77,6 +91,5 @@ public class MockPhone {
 		void messageDeleted(DirectedMessage message);
 		
 	}
-
 	
 }
