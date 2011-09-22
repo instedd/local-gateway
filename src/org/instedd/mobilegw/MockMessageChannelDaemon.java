@@ -28,7 +28,7 @@ public class MockMessageChannelDaemon extends MessageChannelDaemon
 	
 		this.store.addDirectedMessageStoreListener(new DirectedMessageStoreListener() {
 			public void messageAdded(DirectedMessage message) {
-				if (message.isAO()) {
+				if (message.isAT()) {
 					try {
 						MockMessageChannelDaemon.this.moQueue.enqueue(new Message[] { message });
 						MockMessageChannelDaemon.this.logger.info("Message received from " + message.from);
