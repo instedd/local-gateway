@@ -20,7 +20,7 @@ public class Main
 	
 	public static void main(String[] args) throws Exception
 	{
-		//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		Updater updater = Updater.createUpdater(new Runnable() {
 			@Override
 			public void run()
