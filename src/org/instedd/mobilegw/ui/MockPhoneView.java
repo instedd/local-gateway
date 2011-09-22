@@ -23,7 +23,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.border.CompoundBorder;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.instedd.mobilegw.MockPhone;
 import org.instedd.mobilegw.messaging.DirectedMessage;
@@ -77,7 +80,18 @@ public class MockPhoneView extends JPanel {
 	}
 
 	private void addMessagesList() {
-		messagesList = new JList(phone.getListModel()) {
+		final ListModel listModel = phone.getListModel(); 
+		listModel.addListDataListener(new ListDataListener() {
+			public void intervalRemoved(ListDataEvent e) {}
+			public void contentsChanged(ListDataEvent e) {}
+			
+			public void intervalAdded(ListDataEvent e) {
+				int lastIndex = listModel.getSize()-1;
+				if (lastIndex >= 0) messagesList.ensureIndexIsVisible(lastIndex);
+			}
+		});
+		
+		messagesList = new JList(listModel) {
 			private static final long serialVersionUID = 684598854120339844L;
 			public boolean getScrollableTracksViewportWidth() {
 	            return true;
@@ -94,7 +108,9 @@ public class MockPhoneView extends JPanel {
 	    };
 
 	    messagesList.addComponentListener(l);
-	    add(new JScrollPane(messagesList), BorderLayout.CENTER);
+	    JScrollPane scrollPane = new JScrollPane(messagesList);
+	    
+	    add(scrollPane, BorderLayout.CENTER);
 	}
 
 	private void addActionsPanel() {
