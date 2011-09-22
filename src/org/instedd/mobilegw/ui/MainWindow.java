@@ -149,7 +149,7 @@ public class MainWindow extends JFrame {
 		settingsAction = new SettingsAction();
 		styleToolbarButton(toolBar.add(settingsAction));
 		
-		// Listen when application exits and save settings if necessary
+		// Listen when application exits and save settings
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				try { settings.save(); } 

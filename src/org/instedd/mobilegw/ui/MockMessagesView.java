@@ -45,9 +45,10 @@ public class MockMessagesView extends JPanel {
 	
 	public boolean addPhone(String number) {
 		if (this.phones.containsKey(number)) return false;
-		MockPhone phone = new MockPhone(number, store).initialize();
+		MockPhone phone = new MockPhone(number, store);
 	
 		MockPhoneView view = new MockPhoneView(phone);
+		phone.initialize();
 		phones.put(number, view);
 		phonesPanel.add(view);
 		phonesPanel.setSize(300 * phones.size(), 0);
