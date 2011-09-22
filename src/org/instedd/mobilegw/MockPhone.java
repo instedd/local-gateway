@@ -15,7 +15,8 @@ import org.instedd.mobilegw.messaging.DirectedMessage.Direction;
 
 public class MockPhone {
 
-	public final static String PREFIX = "+999";
+	public final static String NUMERIC_PREFIX = "999";
+	public final static String PREFIX = "+" + NUMERIC_PREFIX;
 	
 	private String number;
 	private DirectedMessageStore store;
