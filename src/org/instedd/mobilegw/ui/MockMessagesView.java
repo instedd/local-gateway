@@ -59,6 +59,12 @@ public class MockMessagesView extends JPanel {
 		
 		return true;
 	}
+	
+	public void setMessagingEnabled(boolean enabled) {
+		for (MockPhoneView phoneView : this.phones.values()){
+			phoneView.setMessagingEnabled(enabled);
+		}
+	}
 
 	private void loadPhones() {
 		for (String phone : settings.getMockedPhones()) {

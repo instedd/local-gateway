@@ -36,16 +36,25 @@ public class MockPhoneView extends JPanel {
 
 	private JTextArea messageArea;
 	private JList messagesList;
+
+	private JButton sendButton;
 	
 	public MockPhoneView(MockPhone phone) {
 		super();
 		this.phone = phone;
 		
 		initialize();
+		setMessagingEnabled(false);
 	}
 	
 	public MockPhone getPhone() {
 		return phone;
+	}
+
+	public void setMessagingEnabled(boolean enabled) {
+		messageArea.setEnabled(enabled);
+		sendButton.setEnabled(enabled);		
+		messageArea.setOpaque(enabled);
 	}
 
 	private void initialize() {
@@ -104,11 +113,12 @@ public class MockPhoneView extends JPanel {
 		actionsPanel.add(sendLabel, c);
 		
 		messageArea = new JTextArea();
+		messageArea.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 		c.gridy = 1;
 		c.ipady = 40;
 		actionsPanel.add(messageArea, c);
 		
-		JButton sendButton = new JButton("Send");
+		sendButton = new JButton("Send");
 		c.gridy = 2;
 		c.gridx = 1;
 		c.gridwidth = 1;
