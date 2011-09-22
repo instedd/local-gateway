@@ -9,6 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import javax.swing.UIManager;
+
 import org.instedd.mobilegw.ui.MainWindow;
 import org.instedd.mobilegw.updater.Updater;
 
@@ -18,6 +20,7 @@ public class Main
 	
 	public static void main(String[] args) throws Exception
 	{
+		//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		Updater updater = Updater.createUpdater(new Runnable() {
 			@Override
 			public void run()

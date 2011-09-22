@@ -18,7 +18,10 @@ import javax.swing.ScrollPaneConstants;
 
 import org.instedd.mobilegw.MockPhone;
 import org.instedd.mobilegw.Settings;
+import org.instedd.mobilegw.helpers.PhoneHelper;
+import org.instedd.mobilegw.messaging.DirectedMessage;
 import org.instedd.mobilegw.messaging.DirectedMessageStore;
+import org.instedd.mobilegw.messaging.DirectedMessageStoreListener;
 
 public class MockMessagesView extends JPanel {
 
@@ -39,8 +42,9 @@ public class MockMessagesView extends JPanel {
 		this.settings = settings;
 		this.phones = new HashMap<String, MockPhoneView>();
 		
-		initialize();
+		initialize();	
 		loadPhones();
+		setMessagingEnabled(false);
 	}
 	
 	public boolean addPhone(String number) {
@@ -84,6 +88,16 @@ public class MockMessagesView extends JPanel {
 		add(phonesScrollPane, BorderLayout.CENTER);
 		
 		add(getAddPhonePanel(), BorderLayout.SOUTH);
+	
+		store.addDirectedMessageStoreListener(new DirectedMessageStoreListener() {
+			@Override
+			public void messageAdded(DirectedMessage message) {
+				String number = PhoneHelper.withLeadingPlus(message.to);
+				if(message.isAO() && !phones.containsKey(number)) {
+					addPhone(number);
+				}
+			}
+		});
 	}
 
 	private JPanel getAddPhonePanel() {
