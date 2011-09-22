@@ -2,20 +2,18 @@ package org.instedd.mobilegw.helpers;
 
 public class PhoneHelper {
 
-	public static String removeLeadingPlus(String number) {
-		if (number.startsWith("+")) {
-			return number.substring(1);
-		} else {
-			return number;
-		}
+	public static String removeNonNumeric(String number) {
+		return number.replaceAll("[^\\d]", "");
 	}
 	
+	public static String removeLeadingPlus(String number) {
+		return number.replaceAll("^\\+", "");
+	}
+	
+	/**
+	 * Removes all non numeric characters from phone number and prepends protocol sms://
+	 */
 	public static String withSmsProtocol(String number) {
-		number = removeLeadingPlus(number);
-		if (number.startsWith("sms://")) {
-			return number;
-		} else {
-			return "sms://" + number;
-		}
+		return "sms://"+ removeNonNumeric(number);
 	}
 }

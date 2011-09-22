@@ -4,6 +4,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.ajwcc.pduUtils.gsm3040.PduUtils;
+import org.instedd.mobilegw.helpers.PhoneHelper;
 import org.instedd.mobilegw.messaging.Message;
 import org.instedd.mobilegw.messaging.MessageQueue;
 import org.smslib.AGateway;
@@ -79,7 +80,7 @@ public class ModemDaemon extends MessageChannelDaemon
 			if (msgType == MessageTypes.INBOUND) {
 				Message message = new Message();
 				message.id = UUID.randomUUID().toString();
-				message.from = "sms://" + msg.getOriginator().replaceAll("[^\\d]", "");
+				message.from = PhoneHelper.withSmsProtocol(msg.getOriginator());
 				message.to = "sms://0"; // TODO: use the local number
 				message.text = msg.getText();
 				message.when = msg.getDate();
