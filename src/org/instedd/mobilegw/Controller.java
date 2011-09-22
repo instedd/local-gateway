@@ -10,6 +10,7 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 
 import org.instedd.mobilegw.OutgoingDaemon.OutgoingHandler;
+import org.instedd.mobilegw.helpers.PhoneHelper;
 import org.instedd.mobilegw.messaging.DbDirectedMessageStore;
 import org.instedd.mobilegw.messaging.DbLastIdStore;
 import org.instedd.mobilegw.messaging.DbMessageQueue;
@@ -141,6 +142,10 @@ public class Controller
 		}
 	}
 	
+	private boolean isModemMock() {
+		return modemDaemon != null && modemDaemon instanceof MockMessageChannelDaemon;
+	}
+	
 	private boolean isModemAvailable() {
 		return modemDaemon != null && modemDaemon.getState() == DaemonState.RUNNING;
 	}
@@ -185,7 +190,7 @@ public class Controller
 		@Override
 		public boolean sendMessage(Message message) throws InterruptedException
 		{
-			MessageChannel[] channels = getChannels();
+			MessageChannel[] channels = getChannels(message);
 			for (MessageChannel channel : channels) {
 				try {
 					return channel.sendMessage(message);
@@ -194,15 +199,18 @@ public class Controller
 				}
 			}
 			
-			logger.warning("No channel available for sending message");
+			logger.warning("No channel available for sending message: " + message.toString());
+			if (isModemMock()) logger.warning("Mock messages are only sent to phones with prefix " + MockPhone.PREFIX);
 			return false;
 		}
 		
-		private MessageChannel[] getChannels() {
+		private MessageChannel[] getChannels(Message message) {
 			List<MessageChannel> channels = new ArrayList<MessageChannel>();
 			
 			if (isModemAvailable()) {
-				channels.add(modemDaemon);
+				if (!isModemMock() || PhoneHelper.removeNonNumeric(message.to).startsWith(MockPhone.NUMERIC_PREFIX)) { 
+					channels.add(modemDaemon);
+				}
 			}
 			if (isSkypeAvailable()) {
 				if (useSkype) channels.add(0, skypeDaemon);

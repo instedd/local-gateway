@@ -53,6 +53,6 @@ public class Message
 	@Override
 	public String toString()
 	{
-		return "Id: " + id + ", To: " + to;
+		return "To: " + to + ", Id: " + id;
 	}
 }
