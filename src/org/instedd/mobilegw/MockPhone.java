@@ -1,8 +1,6 @@
 package org.instedd.mobilegw;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import javax.swing.DefaultListModel;
@@ -20,14 +18,12 @@ public class MockPhone {
 	
 	private String number;
 	private DirectedMessageStore store;
-	private List<MockPhoneListener> listeners;
 	
 	private DefaultListModel listModel;
 
 	public MockPhone(String number, DirectedMessageStore store) {
 		this.number = number;
 		this.store = store;
-		this.listeners = new ArrayList<MockPhoneListener>();
 		this.listModel = new DefaultListModel();
 	}
 
@@ -63,10 +59,6 @@ public class MockPhone {
 		return this;
 	}
 	
-	public void addListener(MockPhoneListener listener) {
-		this.listeners.add(listener);
-	}
-	
 	public void sendMessage(String text) throws Exception {
 		DirectedMessage message = new DirectedMessage();
 		message.id = UUID.randomUUID().toString();
@@ -80,17 +72,7 @@ public class MockPhone {
 	
 	private void addMessage(DirectedMessage message) {
 		listModel.addElement(message);
-		for(MockPhoneListener listener : listeners) {
-			listener.messageAdded(message);
-		}
 	}
 	
-	public static interface MockPhoneListener {
-
-		void messageAdded(DirectedMessage message);
-		
-		void messageDeleted(DirectedMessage message);
-		
-	}
 	
 }
