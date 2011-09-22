@@ -47,7 +47,6 @@ public class MockPhoneView extends JPanel {
 		this.phone = phone;
 		
 		initialize();
-		setMessagingEnabled(false);
 	}
 	
 	public MockPhone getPhone() {
