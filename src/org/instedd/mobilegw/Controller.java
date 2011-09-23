@@ -95,7 +95,7 @@ public class Controller
 				modemDaemon = new MockMessageChannelDaemon(mockMessagesStore, moQueue, mtQueue, logger);
 			} else {
 				// Initialize the modem daemon
-				modemDaemon = new ModemDaemon(moQueue, logger, settings.getAppendPlus()).withGateway(gateway);
+				modemDaemon = new ModemDaemon(moQueue, logger, settings.getAppendPlus(), settings.getMobileNumber()).withGateway(gateway);
 			}
 			
 			modemDaemon.addListener(new ControllerDaemonListener());

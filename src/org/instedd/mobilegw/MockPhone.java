@@ -20,11 +20,13 @@ public class MockPhone {
 	private DirectedMessageStore store;
 	private DefaultListModel listModel;
 	private NewMessagesListener listener;
+	private String gatewayNumber;
 
-	public MockPhone(String number, DirectedMessageStore store) {
+	public MockPhone(String number, DirectedMessageStore store, String gatewayNumber) {
 		this.number = number;
 		this.store = store;
 		this.listModel = new DefaultListModel();
+		this.gatewayNumber = gatewayNumber;
 	}
 
 	public String getNumber() {
@@ -60,7 +62,7 @@ public class MockPhone {
 		DirectedMessage message = new DirectedMessage();
 		message.id = UUID.randomUUID().toString();
 		message.from = PhoneHelper.withSmsProtocol(this.getNumber());
-		message.to = PhoneHelper.withSmsProtocol("0"); // TODO: Use configured number
+		message.to = PhoneHelper.withSmsProtocol(this.gatewayNumber);
 		message.direction = Direction.AT;
 		message.when = new Date();
 		message.text = text;
@@ -70,10 +72,12 @@ public class MockPhone {
 	public void clearMessages() throws Exception {
 		String phone = PhoneHelper.withSmsProtocol(this.number);
 		store.deleteMessages(phone);
+		// TODO: Check thread safety
 		listModel.clear();
 	}
 
 	private void addMessage(DirectedMessage message) {
+		// TODO: Check thread safety
 		listModel.addElement(message);
 	}
 
