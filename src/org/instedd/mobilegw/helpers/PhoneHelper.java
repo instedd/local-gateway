@@ -29,4 +29,11 @@ public class PhoneHelper {
 	public static String withLeadingPlus(String number) {
 		return "+" + removeNonNumeric(number);
 	}
+
+	/**
+	 * Returns whether the phone number is valid (contains only numeric chars)
+	 */
+	public static boolean isValidNumericPhone(String phoneNumber) {
+		return phoneNumber.matches("^\\d+$");
+	}
 }

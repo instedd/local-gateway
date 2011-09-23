@@ -3,6 +3,7 @@ package org.instedd.mobilegw.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -12,9 +13,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -37,16 +42,21 @@ public class MockPhoneView extends JPanel {
 	
 	private MockPhone phone;	
 
+	private MockPhonesViewHandler mockPhonesViewHandler;
+	
 	private JTextArea messageArea;
 	private JList messagesList;
-
 	private JButton sendButton;
-	
-	public MockPhoneView(MockPhone phone) {
+
+	public MockPhoneView(MockPhone phone, MockPhonesViewHandler handler) {
 		super();
 		this.phone = phone;
-		
+		this.mockPhonesViewHandler = handler;
 		initialize();
+	}
+	
+	public interface MockPhonesViewHandler {
+		void removePhone(String phoneNumber);
 	}
 	
 	public MockPhone getPhone() {
@@ -57,6 +67,14 @@ public class MockPhoneView extends JPanel {
 		messageArea.setEnabled(enabled);
 		sendButton.setEnabled(enabled);		
 		messageArea.setOpaque(enabled);
+	}
+	
+	private void close() {
+		this.mockPhonesViewHandler.removePhone(this.getPhone().getNumber());
+	}
+
+	private void clearMessages() {
+		// TODO Auto-generated method stub
 	}
 
 	private void initialize() {
@@ -99,6 +117,7 @@ public class MockPhoneView extends JPanel {
 		
 		messagesList.setCellRenderer(new MockMessageCellRenderer());		
 		
+		// Horrible hack for multiline rows with text areas copied from Stackoverflow, but it works
 		ComponentListener l = new ComponentAdapter() {
 	        public void componentResized(ComponentEvent e) {
 	        	messagesList.setFixedCellHeight(10);
@@ -110,6 +129,34 @@ public class MockPhoneView extends JPanel {
 	    JScrollPane scrollPane = new JScrollPane(messagesList);
 	    
 	    add(scrollPane, BorderLayout.CENTER);
+	}
+	
+	private JLabel getClosePhoneLabel() {
+		JLabel closePhonelabel = new JLabel("<html><a href='#'>Close phone</a></html>");
+		closePhonelabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		
+		closePhonelabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				MockPhoneView.this.close();
+			}
+		});
+		
+		return closePhonelabel;
+	}
+
+	private JLabel getClearMessagesLabel() {
+		JLabel clearMessagesLabel = new JLabel("<html><a href='#'>Clear messages</a></html>");
+		clearMessagesLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		
+		clearMessagesLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				MockPhoneView.this.clearMessages();
+			}
+		});
+		
+		return clearMessagesLabel;
 	}
 
 	private void addActionsPanel() {
@@ -155,6 +202,23 @@ public class MockPhoneView extends JPanel {
 				}
 			}
 		});
+		
+		JPanel linksPanel = new JPanel();
+		BoxLayout linksPanelLayout = new BoxLayout(linksPanel, BoxLayout.X_AXIS);
+		linksPanel.setLayout(linksPanelLayout);
+		
+		JLabel closePhoneLabel = getClosePhoneLabel();
+		JLabel clearMessagesLabel = getClearMessagesLabel();
+		
+		linksPanel.add(clearMessagesLabel);
+		linksPanel.add(Box.createHorizontalStrut(5));
+		linksPanel.add(closePhoneLabel);
+		
+		c.gridy = 2;
+		c.gridx = 0;
+		c.anchor = GridBagConstraints.LAST_LINE_START;
+		c.insets = new Insets(0,1,5,5);
+		actionsPanel.add(linksPanel, c);
 		
 		add(actionsPanel, BorderLayout.SOUTH);
 	}
