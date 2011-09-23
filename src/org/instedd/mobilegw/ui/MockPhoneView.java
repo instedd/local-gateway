@@ -56,7 +56,7 @@ public class MockPhoneView extends JPanel {
 	}
 	
 	public interface MockPhonesViewHandler {
-		void removePhone(String phoneNumber);
+		void removePhone(MockPhoneView view);
 	}
 	
 	public MockPhone getPhone() {
@@ -70,7 +70,7 @@ public class MockPhoneView extends JPanel {
 	}
 	
 	private void close() {
-		this.mockPhonesViewHandler.removePhone(this.getPhone().getNumber());
+		this.mockPhonesViewHandler.removePhone(this);
 	}
 
 	private void clearMessages() {
