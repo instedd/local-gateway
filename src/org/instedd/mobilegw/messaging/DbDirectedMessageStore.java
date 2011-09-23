@@ -47,6 +47,12 @@ public class DbDirectedMessageStore implements DirectedMessageStore {
 	}
 
 	@Override
+	public void removeDirectedMessageStoreListener(
+			DirectedMessageStoreListener listener) {
+		this.listeners.remove(listener);		
+	}
+
+	@Override
 	public void addMessage(DirectedMessage message) throws Exception {
 		synchronized (connection) {
 			addStmt.setString(1, message.id);

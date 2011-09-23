@@ -1,6 +1,7 @@
 package org.instedd.mobilegw.messaging;
 
 
+
 /**
  * Store for directed messages, used for storing mocked messages
  * @author spalladino
@@ -27,5 +28,10 @@ public interface DirectedMessageStore {
 	 * Registers a listener for the store
 	 */
 	void addDirectedMessageStoreListener(DirectedMessageStoreListener listener);
+
+	/**
+	 * Removes a listener from the store
+	 */
+	void removeDirectedMessageStoreListener(DirectedMessageStoreListener listener);
 	
 }

@@ -43,15 +43,7 @@ public class MockMessageChannelDaemon extends MessageChannelDaemon
 	@Override
 	public void start()
 	{
-		try {
-			//TODO: Start 
-		} catch (Exception e) {
-			logger.severe("Failed to start daemon: " + e.getMessage());
-			throw new Error(e);
-		}
-		
 		super.start();
-
 		logger.info("Simulated messages daemon started successfully");
 	}
 
@@ -59,15 +51,7 @@ public class MockMessageChannelDaemon extends MessageChannelDaemon
 	public void stop()
 	{
 		super.stop();
-		
-		try {
-			logger.info("Stopping simulated messages daemon");
-			// TODO: Stop me
-			logger.info("Simulated messages daemon stopped successfully");
-		} catch (Exception e) {
-			logger.severe("Failed to stop simulated messages daemon: " + e.getMessage());
-			throw new Error(e);
-		}
+		logger.info("Simulated messages daemon stopped successfully");
 	}
 
 	@Override

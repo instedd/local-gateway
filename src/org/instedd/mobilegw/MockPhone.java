@@ -18,8 +18,8 @@ public class MockPhone {
 	
 	private String number;
 	private DirectedMessageStore store;
-	
 	private DefaultListModel listModel;
+	private NewMessagesListener listener;
 
 	public MockPhone(String number, DirectedMessageStore store) {
 		this.number = number;
@@ -47,16 +47,13 @@ public class MockPhone {
 		}
 		
 		// Listen for new messages
-		store.addDirectedMessageStoreListener(new DirectedMessageStoreListener() {
-			public void messageAdded(DirectedMessage message) {
-				String phone = PhoneHelper.withSmsProtocol(number);
-				if ((message.isAO() && message.to.equals(phone)) || (message.isAT() && message.from.equals(phone))) {
-					addMessage(message);
-				}
-			}
-		});
+		store.addDirectedMessageStoreListener(listener = new NewMessagesListener());
 		
 		return this;
+	}
+	
+	public void close() {
+		store.removeDirectedMessageStoreListener(listener);
 	}
 	
 	public void sendMessage(String text) throws Exception {
@@ -73,6 +70,15 @@ public class MockPhone {
 	private void addMessage(DirectedMessage message) {
 		listModel.addElement(message);
 	}
-	
+
+	private final class NewMessagesListener implements
+			DirectedMessageStoreListener {
+		public void messageAdded(DirectedMessage message) {
+			String phone = PhoneHelper.withSmsProtocol(number);
+			if ((message.isAO() && message.to.equals(phone)) || (message.isAT() && message.from.equals(phone))) {
+				addMessage(message);
+			}
+		}
+	}
 	
 }
