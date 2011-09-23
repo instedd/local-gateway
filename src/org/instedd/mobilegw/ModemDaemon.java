@@ -24,12 +24,14 @@ public class ModemDaemon extends MessageChannelDaemon
 	private final MessageQueue moQueue;
 	private final Logger logger;
 	private final boolean appendPlus;
+	private final String gatewayNumber;
 
-	public ModemDaemon(MessageQueue moQueue, Logger logger, boolean appendPlus) {
+	public ModemDaemon(MessageQueue moQueue, Logger logger, boolean appendPlus, String gatewayNumber) {
 		this.moQueue = moQueue;
 		this.logger = logger;
 		this.smslibService = new Service();
 		this.appendPlus = appendPlus;
+		this.gatewayNumber = gatewayNumber;
 		setName("Modem");
 
 		smslibService.setInboundMessageNotification(new InboundMessageHandler());
@@ -81,7 +83,7 @@ public class ModemDaemon extends MessageChannelDaemon
 				Message message = new Message();
 				message.id = UUID.randomUUID().toString();
 				message.from = PhoneHelper.withSmsProtocol(msg.getOriginator());
-				message.to = "sms://0"; // TODO: use the local number
+				message.to = PhoneHelper.withSmsProtocol(gatewayNumber);
 				message.text = msg.getText();
 				message.when = msg.getDate();
 				try {

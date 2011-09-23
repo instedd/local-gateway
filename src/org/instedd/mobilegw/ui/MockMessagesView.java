@@ -52,7 +52,7 @@ public class MockMessagesView extends JPanel implements MockPhonesViewHandler {
 	
 	public boolean addPhone(String number) {
 		if (this.phones.containsKey(number)) return false;
-		MockPhone phone = new MockPhone(number, store);
+		MockPhone phone = new MockPhone(number, store, settings.getMobileNumber());
 	
 		MockPhoneView view = new MockPhoneView(phone, this);
 		view.setMessagingEnabled(messagingEnabled);
