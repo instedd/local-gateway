@@ -365,9 +365,9 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 		// Check if mobile number is set
 		mobileNumber.setBackground(Color.WHITE);
 		if (mobileNumber.getText().trim().isEmpty()) { 
-			JOptionPane.showMessageDialog(SettingsDialog.this, "Please enter the mobile phone number to proceed with automated configuration", "Error", JOptionPane.ERROR_MESSAGE);
 			mobileNumber.setBackground(Color.PINK);
 			rootTabbedPane.setSelectedComponent(modemTab);
+			JOptionPane.showMessageDialog(SettingsDialog.this, "Please enter the mobile phone number to proceed with automated configuration", "Error", JOptionPane.ERROR_MESSAGE);
 			codePolling = false;
 			return;
 		}
@@ -488,29 +488,32 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 	{
 		boolean valid = true;
 
-		// Clear other errors
+		// Clear errors
 		mobileNumber.setBackground(Color.WHITE);
-		
-		// Validate the modem com port
 		modemComPort.setBackground(Color.WHITE);
-		if (modemComPort.getSelectedItem() == null) {
-			modemComPort.setBackground(Color.PINK);
-			rootTabbedPane.setSelectedIndex(0);
-			valid = false;
-		}
-
-		// Validate modem baud rate
 		modemComBaudRate.setBackground(Color.WHITE);
-		try {
-			Integer.parseInt(modemComBaudRate.getText());
-		} catch (NumberFormatException e) {
-			modemComBaudRate.setBackground(Color.PINK);
-			rootTabbedPane.setSelectedIndex(0);
-			valid = false;
+		gatewayUrl.setBackground(Color.WHITE);
+		
+		// Skip modem validations if mock mode enabled
+		if (!isMockMessagesModeEnabled()) {
+			// Validate the modem com port
+			if (modemComPort.getSelectedItem() == null) {
+				modemComPort.setBackground(Color.PINK);
+				rootTabbedPane.setSelectedIndex(0);
+				valid = false;
+			}
+	
+			// Validate modem baud rate			
+			try {
+				Integer.parseInt(modemComBaudRate.getText());
+			} catch (NumberFormatException e) {
+				modemComBaudRate.setBackground(Color.PINK);
+				rootTabbedPane.setSelectedIndex(0);
+				valid = false;
+			}
 		}
 
 		// Validate gateway URL
-		gatewayUrl.setBackground(Color.WHITE);
 		try {
 			new URL(gatewayUrl.getText());
 		} catch (MalformedURLException e) {
@@ -529,7 +532,7 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 	private void saveValues()
 	{
 		settings.setComPort(modemComPort.getSelectedItem().toString());
-		settings.setComBaudRate(Integer.parseInt(modemComBaudRate.getText()));
+		settings.setComBaudRate(modemComBaudRate.getText());
 		settings.setModemManufacturer(modemManufacturer.getText());
 		settings.setModemModel(modemModel.getText());
 		settings.setMobileNumber(mobileNumber.getText());

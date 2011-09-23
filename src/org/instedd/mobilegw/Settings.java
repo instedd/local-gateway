@@ -84,6 +84,10 @@ public class Settings implements Cloneable {
 		properties.setProperty(MODEM_BAUDRATE, Integer.toString(baudRate));
 	}
 
+	public void setComBaudRate(String baudRate) {
+		properties.setProperty(MODEM_BAUDRATE, baudRate);		
+	}
+
 	public int getComBaudRate() {
 		String baudRate = properties.getProperty(MODEM_BAUDRATE);
 		try {

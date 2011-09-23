@@ -62,7 +62,7 @@ public class MockPhone {
 		DirectedMessage message = new DirectedMessage();
 		message.id = UUID.randomUUID().toString();
 		message.from = PhoneHelper.withSmsProtocol(this.getNumber());
-		message.to = PhoneHelper.withSmsProtocol(this.gatewayNumber);
+		message.to = PhoneHelper.withSmsProtocol(this.gatewayNumber, "0");
 		message.direction = Direction.AT;
 		message.when = new Date();
 		message.text = text;

@@ -83,7 +83,7 @@ public class ModemDaemon extends MessageChannelDaemon
 				Message message = new Message();
 				message.id = UUID.randomUUID().toString();
 				message.from = PhoneHelper.withSmsProtocol(msg.getOriginator());
-				message.to = PhoneHelper.withSmsProtocol(gatewayNumber);
+				message.to = PhoneHelper.withSmsProtocol(gatewayNumber, "0");
 				message.text = msg.getText();
 				message.when = msg.getDate();
 				try {

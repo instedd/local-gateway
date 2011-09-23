@@ -6,6 +6,7 @@ public class PhoneHelper {
 	 * Removes all non numeric characters from the number, including the protocol
 	 */
 	public static String removeNonNumeric(String number) {
+		if (number == null) return null;
 		return number.replaceAll("[^\\d]", "");
 	}
 	
@@ -21,6 +22,16 @@ public class PhoneHelper {
 	 */
 	public static String withSmsProtocol(String number) {
 		return "sms://"+ removeNonNumeric(number);
+	}
+	
+	/**
+	 * Removes all non numeric characters from phone number and prepends protocol sms://
+	 * Uses defaultValue if number is null or empty
+	 */
+	public static String withSmsProtocol(String number, String defaultValue) {
+		number = removeNonNumeric(number);
+		if (number == null || number.length() == 0) number = defaultValue;
+		return "sms://" + number;
 	}
 	
 	/**
