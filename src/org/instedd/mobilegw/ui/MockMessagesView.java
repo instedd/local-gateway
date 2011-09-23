@@ -5,9 +5,8 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -32,7 +31,7 @@ public class MockMessagesView extends JPanel implements MockPhonesViewHandler {
 	private JPanel phonesPanel;
 	private JTextField phoneField;
 	
-	private Map<String, MockPhoneView> phones;
+	private List<MockPhoneView> phones;
 	private DirectedMessageStore store;
 
 	private Settings settings;
@@ -43,7 +42,7 @@ public class MockMessagesView extends JPanel implements MockPhonesViewHandler {
 		
 		this.store = store;
 		this.settings = settings;
-		this.phones = new HashMap<String, MockPhoneView>();
+		this.phones = new ArrayList<MockPhoneView>();
 		
 		initialize();	
 		loadPhones();
@@ -51,13 +50,13 @@ public class MockMessagesView extends JPanel implements MockPhonesViewHandler {
 	}
 	
 	public boolean addPhone(String number) {
-		if (this.phones.containsKey(number)) return false;
+		if (hasPhone(number)) return false;
 		MockPhone phone = new MockPhone(number, store, settings.getMobileNumber());
 	
 		MockPhoneView view = new MockPhoneView(phone, this);
 		view.setMessagingEnabled(messagingEnabled);
 		phone.initialize();
-		phones.put(number, view);
+		phones.add(view);
 		
 		phonesPanel.add(view);
 		phonesPanel.setSize(300 * phones.size(), 0);
@@ -68,22 +67,30 @@ public class MockMessagesView extends JPanel implements MockPhonesViewHandler {
 	}
 
 	@Override
-	public void removePhone(String phoneNumber) {
-		this.phones.remove(phoneNumber);
+	public void removePhone(MockPhoneView view) {
+		phones.remove(view);
 		redrawPhones();
 		updateSettings();
 	}
 
 	public void setMessagingEnabled(boolean enabled) {
 		this.messagingEnabled = enabled;
-		for (MockPhoneView phoneView : this.phones.values()){
+		for (MockPhoneView phoneView : this.phones){
 			phoneView.setMessagingEnabled(enabled);
 		}
+	}
+	
+	private boolean hasPhone(String phone) {
+		for (MockPhoneView view : phones) {
+			if (view.getPhone().getNumber().equals(phone)) {
+				return true;
+			}
+		} return false;
 	}
 
 	private void redrawPhones() {
 		phonesPanel.removeAll();
-		for (MockPhoneView view : phones.values()) {
+		for (MockPhoneView view : phones) {
 			phonesPanel.add(view);
 		} phonesPanel.setSize(300 * phones.size(), 0);
 	}
@@ -95,9 +102,12 @@ public class MockMessagesView extends JPanel implements MockPhonesViewHandler {
 	}
 
 	private void updateSettings() {
-		Set<String> phonesKeySet = phones.keySet();
-		String[] phonesArray = (String[]) phonesKeySet.toArray(new String[phonesKeySet.size()]);
-		settings.setMockedPhones(phonesArray);
+		List<String> numbers = new ArrayList<String>();
+		for (MockPhoneView view : phones) {
+			numbers.add(view.getPhone().getNumber());
+		}
+		String[] numbersArray = (String[]) numbers.toArray(new String[numbers.size()]);
+		settings.setMockedPhones(numbersArray);
 	}
 
 	private void scrollToPhone(String string) {
@@ -121,7 +131,7 @@ public class MockMessagesView extends JPanel implements MockPhonesViewHandler {
 			@Override
 			public void messageAdded(DirectedMessage message) {
 				String number = PhoneHelper.withLeadingPlus(message.to);
-				if(message.isAO() && !phones.containsKey(number)) {
+				if(message.isAO() && !hasPhone(number)) {
 					addPhone(number);
 				}
 			}
