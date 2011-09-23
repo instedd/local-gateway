@@ -23,6 +23,7 @@ public class DbDirectedMessageStore implements DirectedMessageStore {
 	private PreparedStatement addStmt;
 	private PreparedStatement selectAllStmt;
 	private PreparedStatement selectPhoneStmt;
+	private PreparedStatement deletePhoneStmt;
 
 	public DbDirectedMessageStore(Connection connection, String table)
 	{
@@ -35,6 +36,7 @@ public class DbDirectedMessageStore implements DirectedMessageStore {
 			addStmt = connection.prepareStatement("INSERT INTO " + table + " (Id, [When], [From], [To], [Text], [Direction]) VALUES (?,?,?,?,?,?)");
 			selectAllStmt = connection.prepareStatement("SELECT * FROM " + table + " ORDER BY [When]");
 			selectPhoneStmt = connection.prepareStatement("SELECT * FROM " + table + " WHERE ([From] = ? AND [Direction] = 'AT') OR ([To] = ? AND [Direction] = 'AO') ORDER BY [When]");	
+			deletePhoneStmt = connection.prepareStatement("DELETE FROM " + table + " WHERE ([From] = ? AND [Direction] = 'AT') OR ([To] = ? AND [Direction] = 'AO')");
 		} catch (SQLException e) {
 			throw new Error(e);
 		}
@@ -44,6 +46,16 @@ public class DbDirectedMessageStore implements DirectedMessageStore {
 	public void addDirectedMessageStoreListener(
 			DirectedMessageStoreListener listener) {
 		this.listeners.add(listener);
+	}
+
+	@Override
+	public void deleteMessages(String phone) throws Exception {
+		synchronized (connection) {
+			deletePhoneStmt.setString(1, phone);
+			deletePhoneStmt.setString(2, phone);
+			deletePhoneStmt.execute();
+			connection.commit();
+		}
 	}
 
 	@Override
@@ -126,10 +138,8 @@ public class DbDirectedMessageStore implements DirectedMessageStore {
 
 	private void ensureTable() throws SQLException {
 		ResultSet tables = connection.getMetaData().getTables(null, null, table, null);
-		try
-		{
-			if (!tables.next())
-			{
+		try {
+			if (!tables.next()) {
 				Statement stmt = connection.createStatement();
 				stmt.execute("CREATE TABLE " + table + " (\n" + 
 						"[OrderId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,\n" +
@@ -141,9 +151,7 @@ public class DbDirectedMessageStore implements DirectedMessageStore {
 						"[Direction] TEXT NOT NULL)");
 				connection.commit();
 			}
-		}
-		finally
-		{
+		} finally {
 			tables.close();
 		}
 	}

@@ -67,6 +67,12 @@ public class MockPhone {
 		store.addMessage(message);
 	}
 	
+	public void clearMessages() throws Exception {
+		String phone = PhoneHelper.withSmsProtocol(this.number);
+		store.deleteMessages(phone);
+		listModel.clear();
+	}
+
 	private void addMessage(DirectedMessage message) {
 		listModel.addElement(message);
 	}

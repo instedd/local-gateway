@@ -15,6 +15,12 @@ public interface DirectedMessageStore {
 	void addMessage(DirectedMessage message) throws Exception;
 	
 	/**
+	 * Deletes all messages sent to or received by this phone
+	 * @throws Exception 
+	 */
+	void deleteMessages(String phone) throws Exception;
+
+	/**
 	 * Iterates all messages in the store
 	 */
 	Iterable<DirectedMessage> iterateMessages();

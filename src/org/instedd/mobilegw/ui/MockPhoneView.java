@@ -74,7 +74,11 @@ public class MockPhoneView extends JPanel {
 	}
 
 	private void clearMessages() {
-		// TODO Auto-generated method stub
+		try {
+			this.phone.clearMessages();
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(this, "Error clearing messages: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private void initialize() {
