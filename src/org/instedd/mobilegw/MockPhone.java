@@ -11,7 +11,7 @@ import org.instedd.mobilegw.messaging.DirectedMessageStore;
 import org.instedd.mobilegw.messaging.DirectedMessageStoreListener;
 import org.instedd.mobilegw.messaging.DirectedMessage.Direction;
 
-public class MockPhone {
+public class MockPhone implements DirectedMessageStoreListener {
 
 	public final static String NUMERIC_PREFIX = "999";
 	public final static String PREFIX = "+" + NUMERIC_PREFIX;
@@ -19,7 +19,6 @@ public class MockPhone {
 	private String number;
 	private DirectedMessageStore store;
 	private DefaultListModel listModel;
-	private NewMessagesListener listener;
 	private String gatewayNumber;
 
 	public MockPhone(String number, DirectedMessageStore store, String gatewayNumber) {
@@ -49,13 +48,13 @@ public class MockPhone {
 		}
 		
 		// Listen for new messages
-		store.addDirectedMessageStoreListener(listener = new NewMessagesListener());
+		store.addDirectedMessageStoreListener(this);
 		
 		return this;
 	}
 	
 	public void close() {
-		store.removeDirectedMessageStoreListener(listener);
+		store.removeDirectedMessageStoreListener(this);
 	}
 	
 	public void sendMessage(String text) throws Exception {
@@ -72,22 +71,18 @@ public class MockPhone {
 	public void clearMessages() throws Exception {
 		String phone = PhoneHelper.withSmsProtocol(this.number);
 		store.deleteMessages(phone);
-		// TODO: Check thread safety
 		listModel.clear();
 	}
 
-	private void addMessage(DirectedMessage message) {
-		// TODO: Check thread safety
+	private void addMessage(final DirectedMessage message) {
 		listModel.addElement(message);
 	}
 
-	private final class NewMessagesListener implements
-			DirectedMessageStoreListener {
-		public void messageAdded(DirectedMessage message) {
-			String phone = PhoneHelper.withSmsProtocol(number);
-			if ((message.isAO() && message.to.equals(phone)) || (message.isAT() && message.from.equals(phone))) {
-				addMessage(message);
-			}
+	@Override
+	public void messageAdded(DirectedMessage message) {
+		String phone = PhoneHelper.withSmsProtocol(number);
+		if ((message.isAO() && message.to.equals(phone)) || (message.isAT() && message.from.equals(phone))) {
+			addMessage(message);
 		}
 	}
 	

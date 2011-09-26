@@ -51,8 +51,11 @@ public class Message
 	}
 	
 	@Override
-	public String toString()
-	{
-		return "To: " + to + ", Id: " + id;
+	public String toString() {
+		String from = this.from == null ? "NULL" : this.from;
+		String to = this.to == null ? "NULL" : this.to;
+		String id = this.id == null ? "ID NULL" : this.id;
+		return "[" + from + " -> " + to + " : " + id + "]";
+				
 	}
 }
