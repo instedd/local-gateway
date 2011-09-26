@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.instedd.mobilegw.messaging.DirectedMessage.Direction;
 
@@ -49,16 +50,6 @@ public class DbDirectedMessageStore implements DirectedMessageStore {
 	}
 
 	@Override
-	public void deleteMessages(String phone) throws Exception {
-		synchronized (connection) {
-			deletePhoneStmt.setString(1, phone);
-			deletePhoneStmt.setString(2, phone);
-			deletePhoneStmt.execute();
-			connection.commit();
-		}
-	}
-
-	@Override
 	public void removeDirectedMessageStoreListener(
 			DirectedMessageStoreListener listener) {
 		this.listeners.remove(listener);		
@@ -76,6 +67,16 @@ public class DbDirectedMessageStore implements DirectedMessageStore {
 			addStmt.execute();
 			connection.commit();
 		} onMessageAdded(message);
+	}
+
+	@Override
+	public void deleteMessages(String phone) throws Exception {
+		synchronized (connection) {
+			deletePhoneStmt.setString(1, phone);
+			deletePhoneStmt.setString(2, phone);
+			deletePhoneStmt.execute();
+			connection.commit();
+		}
 	}
 
 	@Override
@@ -131,6 +132,8 @@ public class DbDirectedMessageStore implements DirectedMessageStore {
 	}
 
 	private void onMessageAdded(DirectedMessage message) {
+		// Copy list locally to avoid concurrent modification exceptions
+		List<DirectedMessageStoreListener> listeners = new ArrayList<DirectedMessageStoreListener>(this.listeners);
 		for(DirectedMessageStoreListener listener : listeners) {
 			listener.messageAdded(message);
 		}

@@ -9,7 +9,7 @@ import org.instedd.mobilegw.messaging.Message;
 import org.instedd.mobilegw.messaging.MessageQueue;
 import org.instedd.mobilegw.messaging.DirectedMessage.Direction;
 
-public class MockMessageChannelDaemon extends MessageChannelDaemon
+public class MockMessageChannelDaemon extends MessageChannelDaemon implements DirectedMessageStoreListener
 {
 	private final MessageQueue moQueue;
 	private final MessageQueue mtQueue;
@@ -25,25 +25,13 @@ public class MockMessageChannelDaemon extends MessageChannelDaemon
 		this.mtQueue = mtQueue;
 		this.logger = logger;
 		this.store = store;
-	
-		this.store.addDirectedMessageStoreListener(new DirectedMessageStoreListener() {
-			public void messageAdded(DirectedMessage message) {
-				if (message.isAT()) {
-					try {
-						MockMessageChannelDaemon.this.moQueue.enqueue(new Message[] { message });
-						MockMessageChannelDaemon.this.logger.info("Message received from " + message.from);
-					} catch (Exception e) {
-						MockMessageChannelDaemon.this.logger.severe("Error receiving message: " + e.getMessage());
-					}
-				}
-			}
-		});
 	}
 
 	@Override
 	public void start()
 	{
 		super.start();
+		this.store.addDirectedMessageStoreListener(this);
 		logger.info("Simulated messages daemon started successfully");
 	}
 
@@ -51,6 +39,7 @@ public class MockMessageChannelDaemon extends MessageChannelDaemon
 	public void stop()
 	{
 		super.stop();
+		this.store.removeDirectedMessageStoreListener(this);
 		logger.info("Simulated messages daemon stopped successfully");
 	}
 
@@ -65,5 +54,17 @@ public class MockMessageChannelDaemon extends MessageChannelDaemon
 	@Override
 	protected void process() throws InterruptedException {
 		
+	}
+	
+	@Override
+	public void messageAdded(DirectedMessage message) {
+		if (message.isAT()) {
+			try {
+				MockMessageChannelDaemon.this.moQueue.enqueue(new Message[] { message });
+				MockMessageChannelDaemon.this.logger.info("Message received from " + message.from);
+			} catch (Exception e) {
+				MockMessageChannelDaemon.this.logger.severe("Error receiving message " + message.toString() + " : " + e.getMessage());
+			}
+		}
 	}
 }
