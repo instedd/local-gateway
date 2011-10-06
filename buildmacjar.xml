@@ -13,7 +13,7 @@
         	mainclass="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"
         	jar="./build/NuntiumLocalGateway.jar"
         	stubfile="./build.lib/MacOS/JavaApplicationStub"
-        	icon="./build.lib/MacOS/Network Alt.icns"
+        	icon="./build.lib/Icons/favico.icns"
         	version="${Version}">
         	<javafilelist dir="lib" files="librxtxSerial.jnilib" />
         </jarbundler>

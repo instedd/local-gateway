@@ -20,7 +20,7 @@
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleIconFile</key>
-    <string>Network Alt.icns</string>
+    <string>favico.icns</string>
     <key>Java</key>
     <dict>
       <key>MainClass</key>
