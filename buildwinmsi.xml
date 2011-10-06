@@ -7,7 +7,7 @@
 		classpath="./build.lib/NSIS/nsisant-1.3.jar"/>
 
     <target name="build_msi">
-		<nsis script="buildmsi.nsi"/>
+		<nsis script="buildexe.nsi"/>
 	</target>
 	
 	<target name="build_msi_all" depends="create_run_jar, build_msi" />
