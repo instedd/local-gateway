@@ -4,11 +4,11 @@ public abstract class Updater
 {
 	public static Updater createUpdater(Runnable runnable)
 	{
-		String osname = System.getProperty("os.name").toLowerCase();
+		/*String osname = System.getProperty("os.name").toLowerCase();
 
 		if (osname.startsWith("windows")) {
 			return new WindowsUpdater(runnable);
-		}
+		}*/
 
 		return new NullUpdater(runnable);
 	}
