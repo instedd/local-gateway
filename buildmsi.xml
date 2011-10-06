@@ -1,0 +1,11 @@
+<project name="Create windows installer" default="build_msi">
+
+	<taskdef name="nsis" 
+		classname="com.danielreese.nsisant.Task"
+		classpath="./build.lib/NSIS/nsisant-1.3.jar"/>
+
+    <target name="build_msi">
+		<nsis script="buildmsi.nsi"/>
+	</target>
+		
+</project>

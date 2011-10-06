@@ -5,3 +5,5 @@ MobileGateway.app
 MobileGateway.jar
 .DS_Store
 *.log
+*.tar.gz
+build/*
