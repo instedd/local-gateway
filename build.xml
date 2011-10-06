@@ -4,9 +4,9 @@
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. -->
-<project basedir="." default="build" name="MobileGateway">
+<project basedir="." default="build" name="local-gateway">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../../../../usr/lib/eclipse"/>
+    <property name="ECLIPSE_HOME" value="../../../../usr/lib/eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
@@ -14,17 +14,17 @@
         <pathelement location="${ECLIPSE_HOME}/plugins/org.junit4_4.5.0.v20090824/junit.jar"/>
         <pathelement location="${ECLIPSE_HOME}/plugins/org.hamcrest.core_1.1.0.jar"/>
     </path>
-    <path id="MobileGateway.classpath">
+    <path id="local-gateway.classpath">
         <pathelement location="bin"/>
-		<pathelement location="lib/librxtxSerial.so"/>
-        <pathelement location="lib/smslib-3.4.3.jar"/>
         <pathelement location="lib/RXTXcomm.jar"/>
+        <pathelement location="lib/skype_full.jar"/>
         <pathelement location="lib/slf4j-api-1.5.8.jar"/>
         <pathelement location="lib/slf4j-jdk14-1.5.8.jar"/>
+        <pathelement location="lib/smslib-3.4.3.jar"/>
         <pathelement location="lib/sqlitejdbc-v056.jar"/>
+        <pathelement location="lib/swt.jar"/>
         <path refid="JUnit 4.libraryclasspath"/>
-        <pathelement location="lib/skype_full.jar"/>
-		<pathelement location="lib/swt.jar"/>
+        <pathelement location="jar-in-jar-loader.zip"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -32,14 +32,12 @@
             <fileset dir="src">
                 <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
-                <exclude name="**/.svn/"/>
             </fileset>
         </copy>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="test">
                 <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
-                <exclude name="**/.svn/"/>
             </fileset>
         </copy>
     </target>
@@ -53,13 +51,11 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
             <src path="src"/>
-            <exclude name="**/.svn/"/>
-            <classpath refid="MobileGateway.classpath"/>
+            <classpath refid="local-gateway.classpath"/>
         </javac>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
             <src path="test"/>
-            <exclude name="**/.svn/"/>
-            <classpath refid="MobileGateway.classpath"/>
+            <classpath refid="local-gateway.classpath"/>
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
@@ -76,9 +72,10 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <target name="Main">
+    <target name="Local Gateway">
         <java classname="org.instedd.mobilegw.Main" failonerror="true" fork="yes">
-            <classpath refid="MobileGateway.classpath"/>
+            <jvmarg line="-Djava.library.path=./lib"/>
+            <classpath refid="local-gateway.classpath"/>
         </java>
     </target>
 </project>

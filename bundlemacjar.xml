@@ -2,25 +2,25 @@
 <project default="bundle_jar" name="Create Mac OS Application">
 	
 	<taskdef name="jarbundler"
-		classpath="../../Lib/MacOS/jarbundler-2.1.0.jar"
+		classpath="./build.lib/MacOS/jarbundler-2.1.0.jar"
 		classname="net.sourceforge.jarbundler.JarBundler" />
 	
     <target name="bundle_jar">
         <jarbundler dir="."
-        	name="MobileGateway"
+        	name="NuntiumLocalGateway"
         	mainclass="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"
-        	jar="MobileGateway.jar"
-        	stubfile="../../Lib/MacOS/JavaApplicationStub"
-        	icon="../../Lib/MacOS/Network Alt.icns"
+        	jar="NuntiumLocalGateway.jar"
+        	stubfile="./build.lib/MacOS/JavaApplicationStub"
+        	icon="./build.lib/MacOS/Network Alt.icns"
         	version="${Version}">
         	<javafilelist dir="lib" files="librxtxSerial.jnilib" />
         </jarbundler>
-    	<tar compression="gzip" destfile="GeoChat-MobileGateway-MacOS.tar.gz" >
+    	<tar compression="gzip" destfile="build/NuntiumLocalGateway-MacOS.tar.gz" >
     		<tarfileset
-    			includes="MobileGateway.app/**"
-    			excludes="MobileGateway.app/Contents/MacOS/JavaApplicationStub" dir="." />
+    			includes="NuntiumLocalGateway.app/**"
+    			excludes="NuntiumLocalGateway.app/Contents/MacOS/JavaApplicationStub" dir="." />
     		<tarfileset
-    			includes="MobileGateway.app/Contents/MacOS/JavaApplicationStub" dir="."
+    			includes="NuntiumLocalGateway.app/Contents/MacOS/JavaApplicationStub" dir="."
     			mode="755" />
     	</tar>
     </target>

@@ -4,50 +4,46 @@
 	<import file="./exportjar.xml" />
 
 	<taskdef name="deb"
-		classpath="../../Lib/Debian/ant-deb.jar"
+		classpath="./build.lib/Debian/ant-deb.jar"
 		classname="com.googlecode.ant_deb_task.Deb" />
 		
 	<taskdef name="desktopentry"
-		classpath="../../Lib/Debian/ant-deb.jar"
+		classpath="./build.lib/Debian/ant-deb.jar"
 		classname="com.googlecode.ant_deb_task.DesktopEntry" />
 
     <target name="create_desktop_entry" description="Creates the desktop shortcut to be included in the deb file">
         <mkdir dir="build"/>
         <desktopentry
-            toFile="build/mobile-gateway.desktop"
-            name="Mobile Gateway"
-            comment="InSTEDD Mobile Gateway"
-			path="/usr/share/mobile-gateway"
-			icon="/usr/share/mobile-gateway/res/msn_INSTEDD_72.png"
-            exec="java -Dsmslib.serial.polling=true -Dgnu.io.rxtx.SerialPorts=&quot;/dev/ttyACM0:/dev/ttyACM1:/dev/ttyACM2&quot; -Djava.library.path=./lib -jar ./bin/MobileGateway.jar"
+            toFile="build/nuntium-local-gateway.desktop"
+            name="Nuntium Local Gateway"
+            comment="InSTEDD Nuntium Local Gateway"
+			path="/usr/share/nuntium-local-gateway"
+			icon="/usr/share/nuntium-local-gateway/res/NLG72.png"
+            exec="java -Dsmslib.serial.polling=true -Dgnu.io.rxtx.SerialPorts=&quot;/dev/ttyACM0:/dev/ttyACM1:/dev/ttyACM2&quot; -Djava.library.path=./lib -jar ./bin/NuntiumLocalGateway.jar"
             categories="Utility;Java;TelephonyTools"
         />
     </target>
     
     <target name="dist" depends="create_run_jar, create_desktop_entry" description="Builds the main deb file">
         <deb
-            todir="."
-            package="mobile-gateway"
+            todir="build"
+            package="nuntium-local-gateway"
             section="utils"
             depends="default-jre-headless"
         >
             <version upstream="1.0"/>
             <maintainer email="instedd@manas.com.ar" name="InSTEDD"/>
-            <description synopsis="InSTEDD Mobile Gateway">
-InSTEDD's Mobile Gateway is a lightweight Java utility that runs by converting SMS's to and from simple XML messages that can be interchanged with a server using QST.
+            <description synopsis="InSTEDD Nuntium Local Gateway">
+InSTEDD's Nuntium Local Gateway is a lightweight Java utility that runs by converting SMS's to and from simple XML messages that can be interchanged with a server using QST.
 
 Simply plug in a supported phone into your computer, configure the gateway to be used, and keep the daemon running to have your own computer act as a gateway for your chosen application. 
             </description>
-            <tarfileset file="./build/mobile-gateway.desktop" prefix="usr/share/applications"/>
-			<tarfileset file="./lib/librxtxSerial.so" prefix="usr/share/mobile-gateway/lib"/>
-			<tarfileset file="./MobileGateway.jar" prefix="usr/share/mobile-gateway/bin"/>
-			<tarfileset file="./MobileGateway.sh" prefix="usr/share/mobile-gateway" filemode="755"/>
-			<tarfileset file="../../Lib/InSTEDD Icons/msn_INSTEDD_72.png" prefix="usr/share/mobile-gateway/res"/>			
+            <tarfileset file="./build/nuntium-local-gateway.desktop" prefix="usr/share/applications"/>
+			<tarfileset file="./lib/librxtxSerial.so" prefix="usr/share/nuntium-local-gateway/lib"/>
+			<tarfileset file="./build/NuntiumLocalGateway.jar" prefix="usr/share/nuntium-local-gateway/bin"/>
+			<tarfileset file="./build.lib/Debian/NuntiumLocalGateway.sh" prefix="usr/share/nuntium-local-gateway" filemode="755"/>
+			<tarfileset file="./build.lib/Icons/NLG72.png" prefix="usr/share/nuntium-local-gateway/res"/>			
         </deb>
-    </target>
-    
-    <target name="clean" description="Remove all work folders">
-        <delete dir="build"/>
     </target>
 
 </project>
