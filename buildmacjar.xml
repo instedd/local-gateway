@@ -11,7 +11,7 @@
         <jarbundler dir="."
         	name="NuntiumLocalGateway"
         	mainclass="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"
-        	jar="NuntiumLocalGateway.jar"
+        	jar="./build/NuntiumLocalGateway.jar"
         	stubfile="./build.lib/MacOS/JavaApplicationStub"
         	icon="./build.lib/MacOS/Network Alt.icns"
         	version="${Version}">
