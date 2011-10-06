@@ -1,4 +1,4 @@
-OutFile "build\LocalGateway.msi"
+OutFile "build\LocalGateway.exe"
 Name "Nuntium Local Gateway"
 InstallDir "$ProgramFiles\InSTEDD\Nuntium Local Gateway"
 
