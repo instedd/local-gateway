@@ -3,13 +3,16 @@ package org.instedd.mobilegw.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
@@ -101,7 +104,9 @@ public class MainWindow extends JFrame {
 		this.setSize(800, 600);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.setTitle("Mobile Gateway");
+		this.setTitle("Nuntium Local Gateway");
+		
+		setApplicationIcon();
 		
 		settings = new Settings();
 		
@@ -157,6 +162,13 @@ public class MainWindow extends JFrame {
 				catch (IOException e1) { e1.printStackTrace(); }
 			}
 		});
+	}
+
+	private void setApplicationIcon() {
+		List<Image> icons = new ArrayList<Image>();
+		for (String res : new String[] { "icon_16.png", "icon_32.png", "icon_48.png", "icon_72.png", "icon_96.png", "icon_128.png" }) {
+			icons.add(new ImageIcon(MainWindow.class.getResource(res)).getImage());
+		} this.setIconImages(icons);
 	}
 
 	private void styleToolbarButton(JButton button) {

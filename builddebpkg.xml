@@ -1,4 +1,4 @@
-<project name="Create debian package" default="dist">
+<project name="Create debian package" default="build_deb_all">
 
 	<import file="./build.xml" />
 	<import file="./exportjar.xml" />
@@ -18,15 +18,15 @@
             name="Nuntium Local Gateway"
             comment="InSTEDD Nuntium Local Gateway"
 			path="/usr/share/nuntium-local-gateway"
-			icon="/usr/share/nuntium-local-gateway/res/NLG72.png"
+			icon="/usr/share/nuntium-local-gateway/res/icon_72.png"
             exec="java -Dsmslib.serial.polling=true -Dgnu.io.rxtx.SerialPorts=&quot;/dev/ttyACM0:/dev/ttyACM1:/dev/ttyACM2&quot; -Djava.library.path=./lib -jar ./bin/NuntiumLocalGateway.jar"
             categories="Utility;Java;TelephonyTools"
         />
     </target>
     
-    <target name="dist" depends="create_run_jar, create_desktop_entry" description="Builds the main deb file">
+    <target name="build_deb" depends="create_desktop_entry" description="Builds the main deb file">
         <deb
-            todir="build"
+        	todir="build"
             package="nuntium-local-gateway"
             section="utils"
             depends="default-jre-headless"
@@ -42,8 +42,12 @@ Simply plug in a supported phone into your computer, configure the gateway to be
 			<tarfileset file="./lib/librxtxSerial.so" prefix="usr/share/nuntium-local-gateway/lib"/>
 			<tarfileset file="./build/NuntiumLocalGateway.jar" prefix="usr/share/nuntium-local-gateway/bin"/>
 			<tarfileset file="./build.lib/Debian/NuntiumLocalGateway.sh" prefix="usr/share/nuntium-local-gateway" filemode="755"/>
-			<tarfileset file="./build.lib/Icons/NLG72.png" prefix="usr/share/nuntium-local-gateway/res"/>			
+			<tarfileset file="./src/org/instedd/mobilegw/ui/icon_72.png" prefix="usr/share/nuntium-local-gateway/res"/>			
         </deb>
+    	<move file="build/nuntium-local-gateway_1.0-1_all.deb" toFile="build/LocalGateway.deb" />
+    	<delete file="build/nuntium-local-gateway.desktop" />
     </target>
 
+	<target name="build_deb_all" depends="create_run_jar, build_deb"/> 
+	
 </project>
