@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project default="bundle_jar" name="Create Mac OS Application">
+<project default="build_mac" name="Create Mac OS Application">
+	
+	<import file="./exportjar.xml" />
 	
 	<taskdef name="jarbundler"
 		classpath="./build.lib/MacOS/jarbundler-2.1.0.jar"
 		classname="net.sourceforge.jarbundler.JarBundler" />
 	
-    <target name="bundle_jar">
+    <target name="build_mac">
         <jarbundler dir="."
         	name="NuntiumLocalGateway"
         	mainclass="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"
@@ -15,7 +17,7 @@
         	version="${Version}">
         	<javafilelist dir="lib" files="librxtxSerial.jnilib" />
         </jarbundler>
-    	<tar compression="gzip" destfile="build/NuntiumLocalGateway-MacOS.tar.gz" >
+    	<tar compression="gzip" destfile="build/LocalGateway-MacOS.tar.gz" >
     		<tarfileset
     			includes="NuntiumLocalGateway.app/**"
     			excludes="NuntiumLocalGateway.app/Contents/MacOS/JavaApplicationStub" dir="." />
@@ -25,5 +27,6 @@
     	</tar>
     </target>
 
+	<target name="build_mac_all" depends="create_run_jar, build_mac" />
 	
 </project>

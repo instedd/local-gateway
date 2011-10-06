@@ -1,0 +1,15 @@
+<project default="build_all" name="Creates installers for all platforms">
+
+	<import file="./build.xml" />
+	<import file="./exportjar.xml" />
+	<import file="./buildmacjar.xml" />
+	<import file="./buildwinmsi.xml" />
+	<import file="./builddebpkg.xml" />
+
+	<target name="clean_installers">
+		<delete dir="build"/>
+	</target>
+	
+	<target name="build_all" depends="clean, clean_installers, build, create_run_jar, build_deb, build_mac, build_msi" />
+	
+</project>

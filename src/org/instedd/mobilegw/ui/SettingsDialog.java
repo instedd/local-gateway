@@ -337,17 +337,18 @@ public class SettingsDialog extends JDialog implements ConfigTicketHandler
 		c.gridy = 7;
 		c.weightx = 0;
 		c.gridwidth = 1;
-		panel.add(codeLabel = new JLabel("Generated code:"), c);
+		panel.add(codeLabel = new JLabel("Code:"), c);
 		
 		c.gridx = 1;
-		c.weightx = 1;
+		c.weightx = 2;
 		panel.add(codeField = new JTextField(), c);
 		codeField.setEditable(false);
 		
 		c.gridx = 0;
 		c.gridy = 8;
+		c.weightx = 0;
 		c.gridwidth = 4;
-		panel.add(codeInstructions = new JLabel("<html>Enter the code above in the application to complete the automated configuration process.</html>"), c);
+		panel.add(codeInstructions = new JLabel("<html>Enter the code above in the application to complete the configuration.</html>"), c);
 		
 		c.gridy = 9;
 		c.weighty = 2;

@@ -1,5 +1,6 @@
 package org.instedd.mobilegw;
 
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map.Entry;
