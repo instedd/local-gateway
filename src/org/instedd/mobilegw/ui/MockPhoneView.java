@@ -99,7 +99,7 @@ public class MockPhoneView extends JPanel {
 		// Add send message panel
 		addActionsPanel();
 	}
-
+	
 	private void addMessagesList() {
 		final ListModel listModel = phone.getListModel(); 
 		listModel.addListDataListener(new ListDataListener() {
@@ -107,7 +107,7 @@ public class MockPhoneView extends JPanel {
 			public void contentsChanged(ListDataEvent e) {}
 			
 			public void intervalAdded(ListDataEvent e) {
-				int lastIndex = listModel.getSize()-1;
+				final int lastIndex = listModel.getSize()-1;				
 				if (lastIndex >= 0) messagesList.ensureIndexIsVisible(lastIndex);
 			}
 		});
@@ -263,7 +263,7 @@ public class MockPhoneView extends JPanel {
 	    }
 
 	    @Override
-	    public Component getListCellRendererComponent(final JList list,
+	    public synchronized Component getListCellRendererComponent(final JList list,
 	            final Object value, final int index, final boolean isSelected,
 	            final boolean hasFocus) {
 

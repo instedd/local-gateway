@@ -35,8 +35,8 @@ public class DbDirectedMessageStore implements DirectedMessageStore {
 			ensureTable();
 
 			addStmt = connection.prepareStatement("INSERT INTO " + table + " (Id, [When], [From], [To], [Text], [Direction]) VALUES (?,?,?,?,?,?)");
-			selectAllStmt = connection.prepareStatement("SELECT * FROM " + table + " ORDER BY [When]");
-			selectPhoneStmt = connection.prepareStatement("SELECT * FROM " + table + " WHERE ([From] = ? AND [Direction] = 'AT') OR ([To] = ? AND [Direction] = 'AO') ORDER BY [When]");	
+			selectAllStmt = connection.prepareStatement("SELECT * FROM " + table + " ORDER BY [OrderId]");
+			selectPhoneStmt = connection.prepareStatement("SELECT * FROM " + table + " WHERE ([From] = ? AND [Direction] = 'AT') OR ([To] = ? AND [Direction] = 'AO') ORDER BY [OrderId]");	
 			deletePhoneStmt = connection.prepareStatement("DELETE FROM " + table + " WHERE ([From] = ? AND [Direction] = 'AT') OR ([To] = ? AND [Direction] = 'AO')");
 		} catch (SQLException e) {
 			throw new Error(e);
