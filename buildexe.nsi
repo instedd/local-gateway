@@ -1,6 +1,8 @@
 OutFile "build\LocalGateway.exe"
 Name "Nuntium Local Gateway"
 InstallDir "$ProgramFiles\InSTEDD\Nuntium Local Gateway"
+SetCompressor /SOLID lzma
+Icon build.lib\Icons\favico.ico
 
 Page directory
 Page instfiles
@@ -13,7 +15,7 @@ Section
   File /oname=NuntiumLocalGateway.jar build\NuntiumLocalGateway.jar
   File /oname=rxtxSerial.dll lib\rxtxSerial.dll
   File /oname=NuntiumLocalGateway.ico build.lib\Icons\favico.ico
-  File /oname=NuntiumLocalGateway.png src\org\instedd\mobilegw\ui\icon_72.png
+  File /oname=NuntiumLocalGateway.png src\org\instedd\mobilegw\ui\icons\xhdpi.png
   CreateDirectory "$SMPROGRAMS\InSTEDD\Nuntium Local Gateway"
   CreateShortCut "$SMPROGRAMS\InSTEDD\Nuntium Local Gateway\Nuntium Local Gateway.lnk" "$INSTDIR\NuntiumLocalGateway.jar" "" "$INSTDIR\NuntiumLocalGateway.ico"
   CreateShortCut "$SMPROGRAMS\InSTEDD\Nuntium Local Gateway\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
