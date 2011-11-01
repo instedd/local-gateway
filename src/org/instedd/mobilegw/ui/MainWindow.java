@@ -166,8 +166,8 @@ public class MainWindow extends JFrame {
 
 	private void setApplicationIcon() {
 		List<Image> icons = new ArrayList<Image>();
-		for (String res : new String[] { "icon_16.png", "icon_32.png", "icon_48.png", "icon_72.png", "icon_96.png", "icon_128.png" }) {
-			icons.add(new ImageIcon(MainWindow.class.getResource(res)).getImage());
+		for (String res : new String[] { "xldpi", "ldpi", "mdpi", "hdpi", "xhdpi", "xxhdpi" }) {
+			icons.add(new ImageIcon(MainWindow.class.getResource("icons/"+res+".png")).getImage());
 		} this.setIconImages(icons);
 	}
 
