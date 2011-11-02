@@ -2,7 +2,8 @@ OutFile "build\LocalGateway.exe"
 Name "Nuntium Local Gateway"
 InstallDir "$ProgramFiles\InSTEDD\Nuntium Local Gateway"
 SetCompressor /SOLID lzma
-Icon build.lib\Icons\favico.ico
+BrandingText " " 
+WindowIcon off 
 
 Page directory
 Page instfiles

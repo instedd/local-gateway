@@ -10,10 +10,6 @@
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
-    <path id="JUnit 4.libraryclasspath">
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.junit4_4.5.0.v20090824/junit.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.hamcrest.core_1.1.0.jar"/>
-    </path>
     <path id="local-gateway.classpath">
         <pathelement location="bin"/>
         <pathelement location="lib/RXTXcomm.jar"/>
@@ -23,19 +19,12 @@
         <pathelement location="lib/smslib-3.4.3.jar"/>
         <pathelement location="lib/sqlitejdbc-v056.jar"/>
         <pathelement location="lib/swt.jar"/>
-        <path refid="JUnit 4.libraryclasspath"/>
         <pathelement location="jar-in-jar-loader.zip"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src">
-                <exclude name="**/*.launch"/>
-                <exclude name="**/*.java"/>
-            </fileset>
-        </copy>
-        <copy includeemptydirs="false" todir="bin">
-            <fileset dir="test">
                 <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
             </fileset>
@@ -51,10 +40,6 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
             <src path="src"/>
-            <classpath refid="local-gateway.classpath"/>
-        </javac>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
-            <src path="test"/>
             <classpath refid="local-gateway.classpath"/>
         </javac>
     </target>

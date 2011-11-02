@@ -7,3 +7,5 @@ MobileGateway.jar
 *.log
 *.tar.gz
 build/*
+NuntiumLocalGateway.app
+*.orig
